@@ -2,17 +2,23 @@ let searchFormEl = document.querySelector("#search-form");
 let searchInputEl = document.querySelector("#searchbar");
 let rightContainerEl = document.querySelector(".right-container");
 let rightBottomEl = document.querySelector(".right-bottom");
+let targetCity = document.querySelector("#target-city")
+let cityName;
 
 
 let formSubmitHandler = function(event) {
     event.preventDefault();
     geocoding();
-   
+    
 };
+
+
 
 let geocoding = function() {
 
-    let cityName = searchInputEl.value.trim();
+    cityName = searchInputEl.value.trim();
+    console.log(cityName);
+    
    
    let openWeatherBaseUrl = "http://api.openweathermap.org/geo/1.0/direct?q=";
    let geocodingUrl = openWeatherBaseUrl + cityName + ",us&limit=5&appid=966f438203d0b88a9f9515f495dd00a2";
@@ -23,16 +29,20 @@ let geocoding = function() {
    })
    .then(function (data) {
      console.log(data);
-     var cityLat = data[0].lat;
-     var cityLon = data[0].lon;
+     cityName = data[0].name;
+     targetCity.textContent = cityName;
+     let cityLat = data[0].lat;
+     let cityLon = data[0].lon;
      
     getCurrentWeather(cityLat, cityLon);
+    rightBottomEl.innerHTML = "";
     forcast5days(cityLat,cityLon);
+    addToSearchHistory();
 
    });
 };
 
-var getCurrentWeather= function(lat, lon) {
+let getCurrentWeather= function(lat, lon) {
     let currentweatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=966f438203d0b88a9f9515f495dd00a2`;
 
     fetch(currentweatherUrl)
@@ -43,15 +53,15 @@ var getCurrentWeather= function(lat, lon) {
         console.log(data);
 
 
-        var iconCode = data.current.weather[0].icon;
+        let iconCode = data.current.weather[0].icon;
         // console.log(iconCode);
-        var temperature = data.current.temp + "°F";
+        let temperature = data.current.temp + "°F";
         // console.log(temperature);
-        var humidity = data.current.humidity + "%";
+        let humidity = data.current.humidity + "%";
         // console.log(humidity);
-        var windSpeed = data.current.wind_speed + "MPH";
+        let windSpeed = data.current.wind_speed + "MPH";
         // console.log(windSpeed);
-        var uvIndex = data.current.uvi;
+        let uvIndex = data.current.uvi;
         // console.log(uvIndex);
         
         displayCurrent(iconCode, temperature, humidity, windSpeed, uvIndex);
@@ -63,25 +73,25 @@ let displayCurrent = function(icon, temp, humidity, windspped, uvi) {
 
     rightContainerEl.innerHTML = "";
 
-    var currentDiv = document.createElement("div")
+    let currentDiv = document.createElement("div")
     currentDiv.id = "current-div";
 
 
-    // var cityP = document.createElement("p")
+    // let cityP = document.createElement("p")
     // tempP.innerText = cityName1;
-    // var dateP = document.createElement("p")
+    // let dateP = document.createElement("p")
     // tempP.innerHTML = new Date;
 
-    var iconurl = `http://openweathermap.org/img/w/${icon}.png`;
-    var iconI = document.createElement("img");
+    let iconurl = `http://openweathermap.org/img/w/${icon}.png`;
+    let iconI = document.createElement("img");
     iconI.setAttribute("src", iconurl);
-    var tempP = document.createElement("p")
+    let tempP = document.createElement("p")
     tempP.innerText = "Temperature: " + temp;
-    var humidityP = document.createElement("p")
+    let humidityP = document.createElement("p")
     humidityP.innerText = "Humidity: " + humidity;
-    var windspeedP = document.createElement("p")
+    let windspeedP = document.createElement("p")
     windspeedP.innerText = "Wind Speed: " + windspped;
-    var uviP = document.createElement("p")
+    let uviP = document.createElement("p")
     uviP.innerText = "UV Index: " + uvi;
    
 
@@ -95,7 +105,12 @@ let displayCurrent = function(icon, temp, humidity, windspped, uvi) {
     rightContainerEl.appendChild(currentDiv);
 }
 
-var forcast5days = function (lat, lon) {
+let forcast5days = function (lat, lon) {
+
+
+     let forecastTitle = document.createElement("h2");
+     forecastTitle.innerText = "5-Day Forecast";
+     rightBottomEl.appendChild(forecastTitle);
 
     let forcastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=966f438203d0b88a9f9515f495dd00a2`;
     // let forcastUrl = `https://api.openweathermap.org/data/2.5/forecast/daily?lat=${lat}&lon=${lon}&units=imperial&ctn=6&appid=966f438203d0b88a9f9515f495dd00a2`;
@@ -107,13 +122,17 @@ var forcast5days = function (lat, lon) {
     .then(function(data){
         console.log(data);
         
+       
+
         for (let i=7; i<40; i+=8) {
+            
 
             let forcastDiv = document.createElement("div");
+            
 
-            // var date = new Date((data.list[i].dt) * 1000);
+            // let date = new Date((data.list[i].dt) * 1000);
             let date = new Date(data.list[i].dt*1000).toLocaleDateString("en-US");
-            console.log(date);
+            // console.log(date);
 
             let forcastDateP = document.createElement("div");
             forcastDateP.innerText = date;
@@ -127,12 +146,12 @@ var forcast5days = function (lat, lon) {
             
             let forcastTempP = document.createElement("p")
             forcastTempP.innerText = "Temperature: " + data.list[i].main.temp;
-            console.log(data.list[i].main.temp);
+            // console.log(data.list[i].main.temp);
             let forcastHumidityP = document.createElement("p")
             forcastHumidityP.innerText = "Humidity: " + data.list[i].main.humidity;
-            console.log(data.list[i].main.humidity);
+            // console.log(data.list[i].main.humidity);
         
-
+            
             forcastDiv.appendChild(forcastDateP);
             forcastDiv.appendChild(forcastIcon);
             forcastDiv.appendChild(forcastTempP);
@@ -143,4 +162,62 @@ var forcast5days = function (lat, lon) {
     });
 };
 
-searchFormEl.addEventListener("submit", formSubmitHandler)
+
+let cityRowEl = document.querySelector("#cityRow");
+let citiesArr;
+
+let renderSearchHistory = function () {
+
+    citiesArr = JSON.parse(localStorage.getItem("searched")) || [];
+
+    for (let i=0; i<citiesArr.length; i++) {
+        let cityblock = document.createElement("td")
+        cityblock.innerText = citiesArr[i];
+        cityRowEl.appendChild(cityblock);
+    }
+    
+}
+
+let addToSearchHistory = function() {
+ console.log(cityName);
+
+ 
+ citiesArr.push(cityName);
+ localStorage.setItem("searched", JSON.stringify(citiesArr));
+ console.log(citiesArr);
+
+ let newcityblock = document.createElement("td")
+ newcityblock.innerText = cityName;
+ cityRowEl.appendChild(newcityblock);
+
+};
+
+renderSearchHistory();
+searchFormEl.addEventListener("submit", formSubmitHandler);
+
+
+
+
+// improve city name display
+
+// let improveCityNameFormat = function(str) {
+//  let inputLower = str.toLowerCase();
+//     if (str.includes(" ")) {
+//         let splitted = str.split(" "); //["new", "york"]
+//         let newArr = [];
+//         for (let i = 0; i<splitted.length; i++ ) {
+            
+//           let newWord = splitted[i].charAt(0).toUpperCase + splitted[i].slice(1);
+//           newArr.push(newWord);
+//           return newArr.join(" ");
+//         }
+//     }
+//     return inputLower.charAt(0).toUpperCase + inputLower.slice(1);
+    
+// }
+
+
+// console.log(improveCityNameFormat("new York"));
+// console.log(improveCityNameFormat("new york"));
+// console.log(improveCityNameFormat("sAn franCisco"));
+// console.log(improveCityNameFormat("chiCAgo"));
