@@ -2,6 +2,7 @@ let searchFormEl = document.querySelector("#search-form");
 let searchInputEl = document.querySelector("#searchbar");
 let rightContainerEl = document.querySelector(".right-container");
 let rightBottomEl = document.querySelector(".right-bottom");
+let forecastTitleEl = document.querySelector("#forecast-title");
 let targetCity = document.querySelector("#target-city")
 let cityName;
 
@@ -9,7 +10,6 @@ let cityName;
 let formSubmitHandler = function(event) {
     event.preventDefault();
     geocoding();
-    
 };
 
 
@@ -30,7 +30,7 @@ let geocoding = function() {
    .then(function (data) {
      console.log(data);
      cityName = data[0].name;
-     targetCity.textContent = cityName;
+     targetCity.textContent = cityName + " (" + (new Date).toLocaleDateString() + ")";
      let cityLat = data[0].lat;
      let cityLon = data[0].lon;
      
@@ -103,14 +103,16 @@ let displayCurrent = function(icon, temp, humidity, windspped, uvi) {
     currentDiv.appendChild(windspeedP);
     currentDiv.appendChild(uviP);
     rightContainerEl.appendChild(currentDiv);
+    forecastTitleEl.innerText = "5-Days Forecast";
 }
 
 let forcast5days = function (lat, lon) {
 
 
-     let forecastTitle = document.createElement("h2");
-     forecastTitle.innerText = "5-Day Forecast";
-     rightBottomEl.appendChild(forecastTitle);
+    //  let forecastTitle = document.createElement("h2");
+    //  forecastTitle.addClass = "d-block";
+    //  forecastTitle.innerText = "5-Day Forecast";
+    //  document.getElementById("forecast-title").append(forecastTitle);
 
     let forcastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=966f438203d0b88a9f9515f495dd00a2`;
     // let forcastUrl = `https://api.openweathermap.org/data/2.5/forecast/daily?lat=${lat}&lon=${lon}&units=imperial&ctn=6&appid=966f438203d0b88a9f9515f495dd00a2`;
@@ -128,6 +130,7 @@ let forcast5days = function (lat, lon) {
             
 
             let forcastDiv = document.createElement("div");
+            forcastDiv.classList.add("forcast-div");
             
 
             // let date = new Date((data.list[i].dt) * 1000);

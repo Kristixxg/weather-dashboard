@@ -1,7 +1,25 @@
+header {
+    background-color: grey;
+    height: 100px;
+}
+
+header h1 {
+    padding-top: 25px;
+    color: white;
+}
+
 .container {
     display: flex;
+    justify-content: space-between;
 }
 
 .right-container {
     border: 1px solid grey;
+}
+
+.forcast-div {
+    background-color: grey;
+    margin: 5px;
+    padding: 5px;
+    color: white;
 }
