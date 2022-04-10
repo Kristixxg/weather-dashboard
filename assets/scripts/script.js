@@ -20,7 +20,7 @@ let geocoding = function() {
     console.log(cityName);
     
    
-   let openWeatherBaseUrl = "http://api.openweathermap.org/geo/1.0/direct?q=";
+   let openWeatherBaseUrl = "https://api.openweathermap.org/geo/1.0/direct?q=";
    let geocodingUrl = openWeatherBaseUrl + cityName + ",us&limit=5&appid=966f438203d0b88a9f9515f495dd00a2";
 
    fetch(geocodingUrl)
