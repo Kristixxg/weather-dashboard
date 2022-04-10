@@ -23,3 +23,21 @@ header h1 {
     padding: 5px;
     color: white;
 }
+
+.lowuv {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+}
+
+.moduv {
+    background-color: yellow;
+}
+
+.highuv {
+    background-color: orange;
+}
+
+.veryhighuv {
+    background-color: red;
+}

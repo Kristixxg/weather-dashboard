@@ -93,6 +93,17 @@ let displayCurrent = function(icon, temp, humidity, windspped, uvi) {
     windspeedP.innerText = "Wind Speed: " + windspped;
     let uviP = document.createElement("p")
     uviP.innerText = "UV Index: " + uvi;
+    
+    //uv index and color code
+    if(uvi < 2){
+        uviP.classList.add("lowuv")
+    } else if (uvi < 5) {
+        uviP.classList.add("moduv")
+    } else if (uvi < 7) {
+        uviP.classList.add("highuv")
+    } else if (uvi <10) {
+        uviP.classList.add("veryhighuv")
+    }
    
 
     // currentDiv.appendChild(cityP);
